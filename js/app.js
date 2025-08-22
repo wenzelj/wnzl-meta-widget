@@ -11,12 +11,19 @@ angular
         properties: {
           firstname: {
             type: "string",
+            required: true,
+            minLength: 2,
+            maxLength: 50,
           },
           surname: {
             type: "string",
+            required: true,
+            minLength: 2,
+            maxLength: 50,
           },
           age: {
             type: "number",
+            required: true,
           },
           occupation: {
             restLookup: "occupations",
@@ -39,10 +46,12 @@ angular
       child: {
         properties: {
           name: {
-            type: "string"
+            type: "string",
+            required: true
           },
           age: {
-            type: "number"
+            type: "number",
+            required: true
           },
         },
       },
