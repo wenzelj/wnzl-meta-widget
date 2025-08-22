@@ -6,6 +6,7 @@
 	   <script src="metawidget\4.2\metawidget-core.min.js"></script>
 	    <script src="metawidget\4.2\metawidget-angular.min.js"></script>
 		  <script src="metawidget\4.2\metawidget-bootstrap.min.js"></script>
+		  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
 		 
       <script type="text/javascript">
 
@@ -30,11 +31,11 @@
       <style>
          #metawidget {
             border: 1px solid #cccccc;
-            width: 250px;
             border-radius: 10px;
             padding: 10px;
             margin: 50px auto;
             display: block;
+			margin:20px
          }
          #metawidget button {
             display: block;
@@ -44,8 +45,8 @@
    </head>
    <body ng-controller="myController">
       <metawidget id="metawidget" ng-model="person">
-         <button ng-click="save()">Save</button>
+         <button class="btn btn-primary" ng-click="save()">Save</button>
       </metawidget>
-	  
+	  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
    </body>
 </html>
