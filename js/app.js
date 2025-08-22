@@ -142,6 +142,7 @@ angular
 
     // Wizard
     $scope.wizardStep = 1;
+    $scope.showSummary = false;
 
     $scope.nextStep = function () {
       $scope.wizardStep++;
@@ -166,6 +167,6 @@ angular
     };
 
     $scope.save = function () {
-      console.log($scope.person);
+      $scope.showSummary = true;
     };
   });

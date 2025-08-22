@@ -19,3 +19,14 @@ p {
 	display: block;
 	margin: 10px auto 0px;
 }
+
+tbody, td, tfoot, th, thead, tr {
+	padding:5px;
+}
+select {
+	width: 100%;
+	border-bottom: 1px solid black  ;
+	height: 100%;
+}
+
+.card{margin: auto;}
