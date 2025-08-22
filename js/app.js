@@ -11,12 +11,19 @@ angular
         properties: {
           firstname: {
             type: "string",
+            required: true,
+            minLength: 2,
+            maxLength: 50,
           },
           surname: {
             type: "string",
+            required: true,
+            minLength: 2,
+            maxLength: 50,
           },
           age: {
             type: "number",
+            required: true,
           },
           occupation: {
             restLookup: "occupations",
@@ -152,21 +159,25 @@ angular
       $scope.wizardStep--;
     };
 
+    $scope.startOver = function () {
+      $scope.person = {
+        address: {},
+        children: [],
+      };
+      $scope.newChild = {};
+      $scope.wizardStep = 1;
+    };
+
     $scope.addChild = function () {
-      // Basic validation
-      if (
-        $scope.newChild.name === undefined ||
-        $scope.newChild.name === "" ||
-        $scope.newChild.age === undefined ||
-        $scope.newChild.age === ""
-      ) {
-        return;
-      }
       $scope.person.children.push($scope.newChild);
       $scope.newChild = {};
     };
 
     $scope.save = function () {
+
+      $scope.wizardStep++;
+
       $scope.showSummary = true;
+
     };
   });

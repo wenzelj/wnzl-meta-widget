@@ -1,5 +1,5 @@
 var assert = require( 'assert' );
-var metawidget = require( 'metawidget' );
+var metawidget = require( '../index.js' );
 
 // Use a simple DOM implementation
 

@@ -14,17 +14,22 @@
 </head>
 
 <body ng-controller="myController">
-   <div class="container mt-4" ng-if="!showSummary">
-      <div class="progress mb-4">
-         <div class="progress-bar" role="progressbar" style="width: {{(wizardStep / 3) * 100}}%;">Step {{wizardStep}} of 3</div>
-       </div>
+
+   <div class="container mt-4">
+      <div class="progress mb-4 custom-height">
+         <div class="progress-bar" role="progressbar" style="width: {{(wizardStep / 4) * 100}}%;">Step {{wizardStep}} of
+            4</div>
+      </div>
+
 
       <!-- Step 1: Person -->
       <div class="card bg-light p-3" ng-if="wizardStep === 1">
          <h2>Step 1: Your Details</h2>
-         <metawidget ng-model="person" config="myConfig"></metawidget>
+         <form name="personForm">
+            <metawidget ng-model="person" config="myConfig"></metawidget>
+         </form>
          <div class="mt-3">
-            <button class="btn btn-primary" ng-click="nextStep()">Next</button>
+            <button class="btn btn-primary" ng-click="nextStep()" ng-disabled="personForm.$invalid">Next</button>
          </div>
       </div>
 
@@ -55,15 +60,54 @@
          <!-- Add Child Form -->
          <div class="card bg-light p-3">
             <h4>Add a Child</h4>
-            <metawidget ng-model="newChild" config="myConfig"></metawidget>
+            <form name="childForm">
+               <metawidget ng-model="newChild" config="myConfig"></metawidget>
+            </form>
             <div class="mt-2">
-               <button class="btn btn-success" ng-click="addChild()">Add Child</button>
+               <button class="btn btn-success" ng-click="addChild()" ng-disabled="childForm.$invalid">Add Child</button>
             </div>
          </div>
 
          <div class="mt-3">
             <button class="btn btn-secondary" ng-click="prevStep()">Back</button>
             <button class="btn btn-primary" ng-click="save()">Save</button>
+         </div>
+      </div>
+
+      <!-- Step 4: Summary -->
+      <div class="card bg-light p-3" ng-if="wizardStep === 4">
+         <h2>Summary</h2>
+         <div class="card p-3 mt-4">
+            <h4>Your Details</h4>
+            <div><strong>Firstname:</strong> {{person.firstname}}</div>
+            <div><strong>Surname:</strong> {{person.surname}}</div>
+            <div><strong>Age:</strong> {{person.age}}</div>
+         </div>
+
+         <div class="card p-3 mt-4">
+            <h4>Your Address</h4>
+            <div><strong>Street:</strong> {{person.address.street}}</div>
+            <div><strong>City:</strong> {{person.address.city}}</div>
+            <div><strong>Postcode:</strong> {{person.address.postcode}}</div>
+
+         </div>
+
+         <div class="card p-3 mt-4">
+            <h4>Your Children</h4>
+            <ul class="list-group" ng-if="person.children.length > 0">
+               <li ng-repeat="child in person.children" class="list-group-item">
+                  {{child.name}} ({{child.age}} years old)
+               </li>
+            </ul>
+            <p ng-if="!person.children.length">No children added.</p>
+         </div>
+
+
+
+
+
+         <div class="mt-3">
+            <button class="btn btn-primary" ng-click="startOver()">Start Over</button>
          </div>
       </div>
    </div>

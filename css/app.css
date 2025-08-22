@@ -20,6 +20,12 @@ p {
 	margin: 10px auto 0px;
 }
 
+
+.progress.custom-height {
+	height: 30px;
+	/* Set desired height */
+}
+
 tbody, td, tfoot, th, thead, tr {
 	padding:5px;
 }
@@ -30,3 +36,4 @@ select {
 }
 
 .card{margin: auto;}
+
