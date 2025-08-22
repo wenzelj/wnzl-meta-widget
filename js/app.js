@@ -177,7 +177,5 @@ angular
 
       $scope.wizardStep++;
 
-      $scope.showSummary = true;
-
     };
   });
