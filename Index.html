@@ -22,9 +22,11 @@
       <!-- Step 1: Person -->
       <div class="card bg-light p-3" ng-if="wizardStep === 1">
          <h2>Step 1: Your Details</h2>
-         <metawidget ng-model="person" config="myConfig"></metawidget>
+         <form name="personForm">
+            <metawidget ng-model="person" config="myConfig"></metawidget>
+         </form>
          <div class="mt-3">
-            <button class="btn btn-primary" ng-click="nextStep()">Next</button>
+            <button class="btn btn-primary" ng-click="nextStep()" ng-disabled="personForm.$invalid">Next</button>
          </div>
       </div>
 
@@ -55,9 +57,11 @@
          <!-- Add Child Form -->
          <div class="card bg-light p-3">
             <h4>Add a Child</h4>
-            <metawidget ng-model="newChild" config="myConfig"></metawidget>
+            <form name="childForm">
+               <metawidget ng-model="newChild" config="myConfig"></metawidget>
+            </form>
             <div class="mt-2">
-               <button class="btn btn-success" ng-click="addChild()">Add Child</button>
+               <button class="btn btn-success" ng-click="addChild()" ng-disabled="childForm.$invalid">Add Child</button>
             </div>
          </div>
 

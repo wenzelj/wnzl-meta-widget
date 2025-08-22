@@ -161,15 +161,6 @@ angular
     };
 
     $scope.addChild = function () {
-      // Basic validation
-      if (
-        $scope.newChild.name === undefined ||
-        $scope.newChild.name === "" ||
-        $scope.newChild.age === undefined ||
-        $scope.newChild.age === ""
-      ) {
-        return;
-      }
       $scope.person.children.push($scope.newChild);
       $scope.newChild = {};
     };
