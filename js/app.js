@@ -80,11 +80,14 @@ angular
 
           setTimeout(function () {
             var schemaToUse;
-            if (toInspect === $scope.person) {
-              schemaToUse = schemas.person;
-            } else if (toInspect === $scope.person.address) {
-              schemaToUse = schemas.address;
-            } else if (toInspect === $scope.newChild) {
+
+            if (type === 'person') {
+              if (names && names.length === 1 && names[0] === 'address') {
+                schemaToUse = schemas.address;
+              } else {
+                schemaToUse = schemas.person;
+              }
+            } else if (type === 'newChild') {
               schemaToUse = schemas.child;
             }
 
