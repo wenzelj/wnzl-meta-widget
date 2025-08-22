@@ -166,6 +166,7 @@ angular
     };
 
     $scope.save = function () {
+      alert("Person saved! Check the console for the saved data.");
       console.log($scope.person);
     };
   });
