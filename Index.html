@@ -14,11 +14,13 @@
 </head>
 
 <body ng-controller="myController">
+
    <div class="container mt-4">
       <div class="progress mb-4 custom-height">
          <div class="progress-bar" role="progressbar" style="width: {{(wizardStep / 4) * 100}}%;">Step {{wizardStep}} of
             4</div>
       </div>
+
 
       <!-- Step 1: Person -->
       <div class="card bg-light p-3" ng-if="wizardStep === 1">
@@ -109,6 +111,35 @@
          </div>
       </div>
    </div>
+
+   <!-- Summary Page -->
+   <div class="container mt-4" ng-if="showSummary">
+      <h2>Summary</h2>
+    
+      <div class="card bg-light p-3 mt-3">
+            <h4>Your Details</h4>
+            <div><strong>First Name:</strong> {{person.firstname}}</div>
+            <div><strong>Surname:</strong> {{person.surname}}</div>
+            <div><strong>Age:</strong> {{person.age}}</div>
+            <div><strong>Occupation:</strong> {{person.occupation}}</div>
+         </div>
+         <div class="card bg-light p-3 mt-3">
+            <h4>Your Address</h4>
+            <div><strong>Street:</strong> {{person.address.street}}</div>
+            <div><strong>City:</strong> {{person.address.city}}</div>
+            <div><strong>Postcode:</strong> {{person.address.postcode}}</div>
+         </div>
+    
+ 
+      <div class="card bg-light p-3 mt-3" ng-if="person.children.length > 0">
+          <h4>Your Children</h4>
+          <ul class="list-group">
+              <li ng-repeat="child in person.children" class="list-group-item">
+                  {{child.name}} ({{child.age}} years old)
+              </li>
+          </ul>
+      </div>
+
 
    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
       integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
