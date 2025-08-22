@@ -160,13 +160,21 @@ angular
       $scope.wizardStep--;
     };
 
+    $scope.startOver = function () {
+      $scope.person = {
+        address: {},
+        children: [],
+      };
+      $scope.newChild = {};
+      $scope.wizardStep = 1;
+    };
+
     $scope.addChild = function () {
       $scope.person.children.push($scope.newChild);
       $scope.newChild = {};
     };
 
     $scope.save = function () {
-      alert("Person saved! Check the console for the saved data.");
-      console.log($scope.person);
+      $scope.wizardStep++;
     };
   });
