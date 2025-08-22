@@ -1,0 +1,24 @@
+{
+  "name": "metawidget",
+  "description": "User Interface widget that populates itself with UI components to match the properties of your business objects. Can be used through Node.js for server-side UI generation",
+  "version": "3.5.0",
+  "homepage": "http://metawidget.org",
+  "readmeFilename": "Readme.md",
+  "author": {
+    "name": "Metawidget Team",
+    "url": "http://metawidget.org"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/metawidget/metawidget"
+  },
+  "bugs": {
+    "url": "https://sourceforge.net/p/metawidget/bugs/?source=navbar"
+  },
+  "licenses": [
+    {
+      "type": "LGPL",
+      "url": "https://github.com/metawidget/metawidget/blob/master/src/main/resources/for-bin/lgpl.txt"
+    }
+  ]
+}
