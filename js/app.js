@@ -46,12 +46,10 @@ angular
       child: {
         properties: {
           name: {
-            type: "string",
-            required: true
+            type: "string"
           },
           age: {
-            type: "number",
-            required: true
+            type: "number"
           },
         },
       },
