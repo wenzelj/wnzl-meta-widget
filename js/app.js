@@ -6,19 +6,44 @@ angular
     //
     // Simulate some back-end REST values
 
-    var restSchema = {
-      properties: {
-        firstname: {
-          type: "string",
+    var schemas = {
+      person: {
+        properties: {
+          firstname: {
+            type: "string",
+          },
+          surname: {
+            type: "string",
+          },
+          age: {
+            type: "number",
+          },
+          occupation: {
+            restLookup: "occupations",
+          },
         },
-        surname: {
-          type: "string",
+      },
+      address: {
+        properties: {
+          street: {
+            type: "string"
+          },
+          city: {
+            type: "string"
+          },
+          postcode: {
+            type: "string"
+          },
         },
-        age: {
-          type: "number",
-        },
-        occupation: {
-          restLookup: "occupations",
+      },
+      child: {
+        properties: {
+          name: {
+            type: "string"
+          },
+          age: {
+            type: "number"
+          },
         },
       },
     };
@@ -54,10 +79,21 @@ angular
           // Normally instead of 'setTimeout' you'd use '$http.get'
 
           setTimeout(function () {
-            metawidget.util.combineInspectionResults(
-              inspectionResult,
-              restSchema
-            );
+            var schemaToUse;
+            if (toInspect === $scope.person) {
+              schemaToUse = schemas.person;
+            } else if (toInspect === $scope.person.address) {
+              schemaToUse = schemas.address;
+            } else if (toInspect === $scope.newChild) {
+              schemaToUse = schemas.child;
+            }
+
+            if (schemaToUse) {
+              metawidget.util.combineInspectionResults(
+                inspectionResult,
+                schemaToUse
+              );
+            }
             mw.buildWidgets(inspectionResult);
           }, 1);
 
@@ -94,7 +130,37 @@ angular
       ]),
     };
 
-    $scope.person = {};
+    // Model
+    $scope.person = {
+      address: {},
+      children: [],
+    };
+    $scope.newChild = {};
+
+    // Wizard
+    $scope.wizardStep = 1;
+
+    $scope.nextStep = function () {
+      $scope.wizardStep++;
+    };
+
+    $scope.prevStep = function () {
+      $scope.wizardStep--;
+    };
+
+    $scope.addChild = function () {
+      // Basic validation
+      if (
+        $scope.newChild.name === undefined ||
+        $scope.newChild.name === "" ||
+        $scope.newChild.age === undefined ||
+        $scope.newChild.age === ""
+      ) {
+        return;
+      }
+      $scope.person.children.push($scope.newChild);
+      $scope.newChild = {};
+    };
 
     $scope.save = function () {
       console.log($scope.person);
