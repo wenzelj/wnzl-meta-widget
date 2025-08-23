@@ -158,12 +158,10 @@ angular
       };
 
       $scope.startOver = function () {
-        personRepository.clear().then(function () {
-          $scope.person = new Person();
-          $scope.newChild = new Child();
-          $scope.wizardStep = 1;
-          $scope.view = "landing";
-        });
+        $scope.person = new Person();
+        $scope.newChild = new Child();
+        $scope.wizardStep = 1;
+        $scope.view = "landing";
       };
 
       $scope.addChild = function () {
