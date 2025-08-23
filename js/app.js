@@ -148,10 +148,6 @@ angular
     $scope.newChild = {};
 
     // Load saved data
-    const savedPerson = personRepository.get();
-    if (savedPerson) {
-      $scope.person = savedPerson;
-    }
 
     // Wizard
     $scope.wizardStep = 1;
@@ -160,6 +156,19 @@ angular
 
     $scope.showWizard = function () {
       $scope.view = 'wizard';
+    };
+
+    $scope.searchTerm = '';
+    $scope.searchResults = [];
+    $scope.selectedPerson = null;
+
+    $scope.searchPerson = function () {
+      $scope.searchResults = personRepository.search($scope.searchTerm);
+      $scope.selectedPerson = null;
+    };
+
+    $scope.selectPerson = function (person) {
+      $scope.selectedPerson = person;
     };
 
     $scope.nextStep = function () {

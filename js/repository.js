@@ -1,15 +1,31 @@
 const personRepository = {
     save: function(person) {
-        localStorage.setItem('person', JSON.stringify(person));
-    },
-    get: function() {
-        const personJson = localStorage.getItem('person');
-        if (personJson) {
-            return JSON.parse(personJson);
+        let persons = this.getAll();
+        if (!persons) {
+            persons = [];
         }
-        return null;
+        persons.push(person);
+        localStorage.setItem('persons', JSON.stringify(persons));
+    },
+    getAll: function() {
+        const personsJson = localStorage.getItem('persons');
+        if (personsJson) {
+            return JSON.parse(personsJson);
+        }
+        return [];
+    },
+    search: function(term) {
+        const persons = this.getAll();
+        if (!term) {
+            return persons;
+        }
+        term = term.toLowerCase();
+        return persons.filter(person => {
+            return person.firstname.toLowerCase().includes(term) ||
+                   person.surname.toLowerCase().includes(term);
+        });
     },
     clear: function() {
-        localStorage.removeItem('person');
+        localStorage.removeItem('persons');
     }
 };

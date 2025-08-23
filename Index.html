@@ -25,6 +25,33 @@
             <button class="btn btn-primary btn-lg" ng-click="showWizard()">Add Person</button>
          </div>
       </div>
+
+      <!-- Search Section -->
+      <div class="card bg-light p-3 mt-4">
+         <h2 class="text-center">Search for a Person</h2>
+         <form ng-submit="searchPerson()">
+            <div class="input-group mb-3">
+               <input type="text" class="form-control" placeholder="Enter name or surname" ng-model="searchTerm">
+               <button class="btn btn-primary" type="submit">Search</button>
+            </div>
+         </form>
+
+         <!-- Search Results -->
+         <div ng-if="searchResults.length > 0">
+            <h4>Search Results</h4>
+            <ul class="list-group">
+               <li ng-repeat="person in searchResults" class="list-group-item">
+                  <a href="#" ng-click="selectPerson(person)">{{person.firstname}} {{person.surname}}</a>
+               </li>
+            </ul>
+         </div>
+
+         <!-- Selected Person Details -->
+         <div ng-if="selectedPerson" class="mt-4">
+             <h4>Person Details</h4>
+             <metawidget ng-model="selectedPerson" config="myConfig" read-only="true"></metawidget>
+         </div>
+      </div>
    </div>
 
    <!-- Wizard -->
