@@ -146,7 +146,15 @@ angular
       };
 
       $scope.selectPerson = function (person) {
-        $scope.selectedPerson = person;
+        var personInstance = new Person(
+            person.firstname,
+            person.surname,
+            person.age,
+            person.occupation
+        );
+        personInstance.address = person.address;
+        personInstance.children = person.children;
+        $scope.selectedPerson = personInstance;
       };
 
       $scope.nextStep = function () {
