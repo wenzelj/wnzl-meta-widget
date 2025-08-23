@@ -58,6 +58,11 @@
             </ul>
          </div>
 
+         <!-- No Search Results -->
+         <div ng-if="searchPerformed && searchResults.length === 0" class="alert alert-info mt-3">
+            No person found with the given name or surname.
+         </div>
+
          <!-- Selected Person Details -->
          <div ng-if="selectedPerson" class="mt-4">
              <person-detail person="selectedPerson"></person-detail>

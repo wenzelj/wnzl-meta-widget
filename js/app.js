@@ -143,8 +143,10 @@ angular
       };
       $scope.searchResults = [];
       $scope.selectedPerson = null;
+      $scope.searchPerformed = false;
 
       $scope.searchPerson = function () {
+        $scope.searchPerformed = true;
         personRepository.search($scope.search.term).then(function (results) {
           $scope.searchResults = results;
           $scope.selectedPerson = null;
