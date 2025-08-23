@@ -1,4 +1,4 @@
-angular.module('myApp').factory('personRepository', ['$q', function($q) {
+angular.module('myApp').factory('personRepository', ['$q', 'schemaService', function($q, schemaService) {
 
     var db;
 
@@ -8,12 +8,21 @@ angular.module('myApp').factory('personRepository', ['$q', function($q) {
         }
 
         return $q(function(resolve, reject) {
-            var request = indexedDB.open('myApp', 1);
+            var request = indexedDB.open('myApp', 2);
 
             request.onupgradeneeded = function(event) {
                 var db = event.target.result;
                 if (!db.objectStoreNames.contains('persons')) {
                     db.createObjectStore('persons', { keyPath: 'id', autoIncrement: true });
+                }
+                if (!db.objectStoreNames.contains('schemas')) {
+                    var schemaStore = db.createObjectStore('schemas', { keyPath: 'id' });
+                    var defaultSchemas = schemaService.getDefaultSchemas();
+                    for (var key in defaultSchemas) {
+                        if (defaultSchemas.hasOwnProperty(key)) {
+                            schemaStore.add({ id: key, schema: defaultSchemas[key] });
+                        }
+                    }
                 }
             };
 
@@ -28,7 +37,30 @@ angular.module('myApp').factory('personRepository', ['$q', function($q) {
         });
     }
 
+    function getSchemas() {
+        return getDb().then(function(db) {
+            return $q(function(resolve, reject) {
+                var transaction = db.transaction(['schemas'], 'readonly');
+                var store = transaction.objectStore('schemas');
+                var request = store.getAll();
+
+                request.onsuccess = function(event) {
+                    var result = {};
+                    event.target.result.forEach(function(item) {
+                        result[item.id] = item.schema;
+                    });
+                    resolve(result);
+                };
+
+                request.onerror = function(event) {
+                    reject(event.target.error);
+                };
+            });
+        });
+    }
+
     return {
+        getSchemas: getSchemas,
         save: function(person) {
             return getDb().then(function(db) {
                 return $q(function(resolve, reject) {
