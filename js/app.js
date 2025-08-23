@@ -163,8 +163,11 @@ angular
     $scope.selectedPerson = null;
 
     $scope.searchPerson = function () {
-      $scope.searchResults = personRepository.search($scope.searchTerm);
-      $scope.selectedPerson = null;
+      personRepository.search($scope.searchTerm).then(function (results) {
+        $scope.searchResults = results;
+        $scope.selectedPerson = null;
+        $scope.$apply();
+      });
     };
 
     $scope.selectPerson = function (person) {
@@ -180,14 +183,16 @@ angular
     };
 
     $scope.startOver = function () {
-      $scope.person = {
-        address: {},
-        children: [],
-      };
-      $scope.newChild = {};
-      $scope.wizardStep = 1;
-      personRepository.clear();
-      $scope.view = 'landing';
+      personRepository.clear().then(function () {
+        $scope.person = {
+          address: {},
+          children: [],
+        };
+        $scope.newChild = {};
+        $scope.wizardStep = 1;
+        $scope.view = 'landing';
+        $scope.$apply();
+      });
     };
 
     $scope.addChild = function () {
@@ -196,7 +201,9 @@ angular
     };
 
     $scope.save = function () {
-      personRepository.save($scope.person);
-      $scope.wizardStep++;
+      personRepository.save($scope.person).then(function () {
+        $scope.wizardStep++;
+        $scope.$apply();
+      });
     };
   });
