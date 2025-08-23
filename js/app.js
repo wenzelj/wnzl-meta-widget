@@ -147,6 +147,12 @@ angular
     };
     $scope.newChild = {};
 
+    // Load saved data
+    const savedPerson = personRepository.get();
+    if (savedPerson) {
+      $scope.person = savedPerson;
+    }
+
     // Wizard
     $scope.wizardStep = 1;
     $scope.showSummary = false;
@@ -166,6 +172,7 @@ angular
       };
       $scope.newChild = {};
       $scope.wizardStep = 1;
+      personRepository.clear();
     };
 
     $scope.addChild = function () {
@@ -174,8 +181,7 @@ angular
     };
 
     $scope.save = function () {
-
+      personRepository.save($scope.person);
       $scope.wizardStep++;
-
     };
   });
