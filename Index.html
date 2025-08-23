@@ -14,27 +14,37 @@
    <script src="js/repository.js"></script>
    <script src="js/components/person-detail.component.js"></script>
    <link rel="stylesheet" type="text/css" href="css/app.css" />
+   <link rel="preconnect" href="https://fonts.googleapis.com">
+   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" integrity="sha512-MV7K8+y+gLIBoVD59lQIYicR65iaqukzvf/nwasF0nqhPay5w/9lJmVM2hMDcnK1OnMGCdVK+iQrJ7lzPJQd1w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 
 <body ng-controller="myController">
 
    <!-- Landing Page -->
    <div class="container mt-4" ng-if="view === 'landing'">
-      <div class="card bg-light p-3 text-center">
-         <h2>Welcome</h2>
-         <p>Click the button below to add a new person.</p>
+      <div class="card p-5 text-center">
+         <h1 class="display-4">Person Registry</h1>
+         <p class="lead">A modern and intuitive application to manage person data.</p>
+         <hr class="my-4">
+         <p>Click the button below to start adding a new person to the registry.</p>
          <div class="mt-3">
-            <button class="btn btn-primary btn-lg" ng-click="showWizard()">Add Person</button>
+            <button class="btn btn-primary btn-lg" ng-click="showWizard()">
+                <i class="fas fa-plus-circle"></i> Add New Person
+            </button>
          </div>
       </div>
 
       <!-- Search Section -->
-      <div class="card bg-light p-3 mt-4">
+      <div class="card p-4 mt-4">
          <h2 class="text-center">Search for a Person</h2>
          <form ng-submit="searchPerson()">
             <div class="input-group mb-3">
-               <input type="text" class="form-control" placeholder="Enter name or surname" ng-model="search.term">
-               <button class="btn btn-primary" type="submit">Search</button>
+               <input type="text" class="form-control" placeholder="Enter name or surname" ng-model="search.term" aria-label="Search term">
+               <button class="btn btn-primary" type="submit" aria-label="Search">
+                   <i class="fas fa-search"></i> Search
+               </button>
             </div>
          </form>
 
@@ -48,6 +58,11 @@
             </ul>
          </div>
 
+         <!-- No Search Results -->
+         <div ng-if="searchPerformed && searchResults.length === 0" class="alert alert-info mt-3">
+            No person found with the given name or surname.
+         </div>
+
          <!-- Selected Person Details -->
          <div ng-if="selectedPerson" class="mt-4">
              <person-detail person="selectedPerson"></person-detail>
@@ -58,34 +73,33 @@
    <!-- Wizard -->
    <div class="container mt-4" ng-if="view === 'wizard'">
       <div class="progress mb-4 custom-height">
-         <div class="progress-bar" role="progressbar" style="width: {{(wizardStep / 4) * 100}}%;">Step {{wizardStep}} of
-            4</div>
+         <div class="progress-bar" role="progressbar" style="width: {{(wizardStep / 4) * 100}}%;">Step {{wizardStep}}: {{wizardStepTitles[wizardStep - 1]}}</div>
       </div>
 
 
       <!-- Step 1: Person -->
-      <div class="card bg-light p-3" ng-if="wizardStep === 1">
+      <div class="card p-3" ng-if="wizardStep === 1">
          <h2>Step 1: Your Details</h2>
          <form name="personForm">
             <metawidget ng-model="person" config="myConfig"></metawidget>
          </form>
-         <div class="mt-3">
+         <div class="button-group">
             <button class="btn btn-primary" ng-click="nextStep()" ng-disabled="personForm.$invalid">Next</button>
          </div>
       </div>
 
       <!-- Step 2: Address -->
-      <div class="card bg-light p-3" ng-if="wizardStep === 2">
+      <div class="card p-3" ng-if="wizardStep === 2">
          <h2>Step 2: Your Address</h2>
          <metawidget ng-model="person.address" config="myConfig"></metawidget>
-         <div class="mt-3">
+         <div class="button-group">
             <button class="btn btn-secondary" ng-click="prevStep()">Back</button>
             <button class="btn btn-primary" ng-click="nextStep()">Next</button>
          </div>
       </div>
 
       <!-- Step 3: Children -->
-      <div class="card bg-light p-3" ng-if="wizardStep === 3">
+      <div class="card p-3" ng-if="wizardStep === 3">
          <h2>Step 3: Your Children</h2>
 
          <!-- Children List -->
@@ -99,7 +113,7 @@
          </div>
 
          <!-- Add Child Form -->
-         <div class="card bg-light p-3">
+         <div class="card p-3">
             <h4>Add a Child</h4>
             <form name="childForm">
                <metawidget ng-model="newChild" config="myConfig"></metawidget>
@@ -109,23 +123,23 @@
             </div>
          </div>
 
-         <div class="mt-3">
+         <div class="button-group">
             <button class="btn btn-secondary" ng-click="prevStep()">Back</button>
             <button class="btn btn-primary" ng-click="save()">Save</button>
          </div>
       </div>
 
       <!-- Step 4: Summary -->
-      <div class="card bg-light p-3" ng-if="wizardStep === 4">
+      <div class="card p-3" ng-if="wizardStep === 4">
          <h2>Summary</h2>
-         <div class="card p-3 mt-4 col-5">
+         <div class="card p-3 mt-4">
             <h4>Your Details</h4>
             <div><strong>Firstname:</strong> {{person.firstname}}</div>
             <div><strong>Surname:</strong> {{person.surname}}</div>
             <div><strong>Age:</strong> {{person.age}}</div>
          </div>
 
-         <div class="card p-3 mt-4 col-5">
+         <div class="card p-3 mt-4">
             <h4>Your Address</h4>
             <div><strong>Street:</strong> {{person.address.street}}</div>
             <div><strong>City:</strong> {{person.address.city}}</div>
@@ -133,7 +147,7 @@
 
          </div>
 
-         <div class="card p-3 mt-4 col-5">
+         <div class="card p-3 mt-4">
             <h4>Your Children</h4>
             <ul class="list-group" ng-if="person.children.length > 0">
                <li ng-repeat="child in person.children" class="list-group-item">
@@ -147,7 +161,7 @@
 
 
 
-         <div class="mt-3">
+         <div class="button-group">
             <button class="btn btn-primary" ng-click="startOver()">Start Over</button>
          </div>
       </div>
@@ -157,14 +171,14 @@
    <div class="container mt-4" ng-if="showSummary">
       <h2>Summary</h2>
     
-      <div class="card bg-light p-3 mt-3">
+      <div class="card p-3 mt-3">
             <h4>Your Details</h4>
             <div><strong>First Name:</strong> {{person.firstname}}</div>
             <div><strong>Surname:</strong> {{person.surname}}</div>
             <div><strong>Age:</strong> {{person.age}}</div>
             <div><strong>Occupation:</strong> {{person.occupation}}</div>
          </div>
-         <div class="card bg-light p-3 mt-3">
+         <div class="card p-3 mt-3">
             <h4>Your Address</h4>
             <div><strong>Street:</strong> {{person.address.street}}</div>
             <div><strong>City:</strong> {{person.address.city}}</div>
@@ -172,7 +186,7 @@
          </div>
     
  
-      <div class="card bg-light p-3 mt-3" ng-if="person.children.length > 0">
+      <div class="card p-3 mt-3" ng-if="person.children.length > 0">
           <h4>Your Children</h4>
           <ul class="list-group">
               <li ng-repeat="child in person.children" class="list-group-item">

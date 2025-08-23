@@ -125,6 +125,12 @@ angular
       $scope.newChild = new Child();
 
       $scope.wizardStep = 1;
+      $scope.wizardStepTitles = [
+          "Your Details",
+          "Your Address",
+          "Your Children",
+          "Summary"
+      ];
       $scope.showSummary = false;
       $scope.view = "landing";
 
@@ -137,8 +143,10 @@ angular
       };
       $scope.searchResults = [];
       $scope.selectedPerson = null;
+      $scope.searchPerformed = false;
 
       $scope.searchPerson = function () {
+        $scope.searchPerformed = true;
         personRepository.search($scope.search.term).then(function (results) {
           $scope.searchResults = results;
           $scope.selectedPerson = null;
