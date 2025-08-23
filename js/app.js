@@ -132,12 +132,14 @@ angular
         $scope.view = "wizard";
       };
 
-      $scope.searchTerm = "";
+      $scope.search = {
+        term: ""
+      };
       $scope.searchResults = [];
       $scope.selectedPerson = null;
 
       $scope.searchPerson = function () {
-        personRepository.search($scope.searchTerm).then(function (results) {
+        personRepository.search($scope.search.term).then(function (results) {
           $scope.searchResults = results;
           $scope.selectedPerson = null;
         });
