@@ -201,7 +201,8 @@ angular
     };
 
     $scope.save = function () {
-      personRepository.save($scope.person).then(function () {
+      var personToSave = angular.copy($scope.person);
+      personRepository.save(personToSave).then(function () {
         $scope.wizardStep++;
         $scope.$apply();
       });

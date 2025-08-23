@@ -1,58 +1,58 @@
 const personRepository = {
-    db: null,
-    init: function() {
-        return new Promise((resolve, reject) => {
-            const request = indexedDB.open('personsDB', 1);
+    dbPromise: null,
+    getDb: function() {
+        if (!this.dbPromise) {
+            this.dbPromise = new Promise((resolve, reject) => {
+                const request = indexedDB.open('personsDB', 1);
 
-            request.onupgradeneeded = (event) => {
-                this.db = event.target.result;
-                this.db.createObjectStore('persons', { keyPath: 'id', autoIncrement: true });
-            };
+                request.onupgradeneeded = (event) => {
+                    let db = event.target.result;
+                    db.createObjectStore('persons', { keyPath: 'id', autoIncrement: true });
+                };
 
-            request.onsuccess = (event) => {
-                this.db = event.target.result;
-                resolve();
-            };
+                request.onsuccess = (event) => {
+                    resolve(event.target.result);
+                };
 
-            request.onerror = (event) => {
-                reject(event.target.error);
-            };
-        });
+                request.onerror = (event) => {
+                    reject(event.target.error);
+                };
+            });
+        }
+        return this.dbPromise;
     },
     save: function(person) {
-        return new Promise((resolve, reject) => {
-            if (!this.db) {
-                return reject('DB not initialized');
-            }
-            const transaction = this.db.transaction(['persons'], 'readwrite');
-            const store = transaction.objectStore('persons');
-            const request = store.add(person);
+        return this.getDb().then(db => {
+            return new Promise((resolve, reject) => {
+                const transaction = db.transaction(['persons'], 'readwrite');
+                const store = transaction.objectStore('persons');
+                const request = store.add(person);
 
-            request.onsuccess = () => {
-                resolve();
-            };
+                request.onsuccess = () => {
+                    resolve();
+                };
 
-            request.onerror = (event) => {
-                reject(event.target.error);
-            };
+                request.onerror = (event) => {
+                    reject(event.target.error);
+                };
+            });
         });
     },
     getAll: function() {
-        return new Promise((resolve, reject) => {
-            if (!this.db) {
-                return reject('DB not initialized');
-            }
-            const transaction = this.db.transaction(['persons'], 'readonly');
-            const store = transaction.objectStore('persons');
-            const request = store.getAll();
+        return this.getDb().then(db => {
+            return new Promise((resolve, reject) => {
+                const transaction = db.transaction(['persons'], 'readonly');
+                const store = transaction.objectStore('persons');
+                const request = store.getAll();
 
-            request.onsuccess = (event) => {
-                resolve(event.target.result);
-            };
+                request.onsuccess = (event) => {
+                    resolve(event.target.result);
+                };
 
-            request.onerror = (event) => {
-                reject(event.target.error);
-            };
+                request.onerror = (event) => {
+                    reject(event.target.error);
+                };
+            });
         });
     },
     search: function(term) {
@@ -68,23 +68,20 @@ const personRepository = {
         });
     },
     clear: function() {
-        return new Promise((resolve, reject) => {
-            if (!this.db) {
-                return reject('DB not initialized');
-            }
-            const transaction = this.db.transaction(['persons'], 'readwrite');
-            const store = transaction.objectStore('persons');
-            const request = store.clear();
+        return this.getDb().then(db => {
+            return new Promise((resolve, reject) => {
+                const transaction = db.transaction(['persons'], 'readwrite');
+                const store = transaction.objectStore('persons');
+                const request = store.clear();
 
-            request.onsuccess = () => {
-                resolve();
-            };
+                request.onsuccess = () => {
+                    resolve();
+                };
 
-            request.onerror = (event) => {
-                reject(event.target.error);
-            };
+                request.onerror = (event) => {
+                    reject(event.target.error);
+                };
+            });
         });
     }
 };
-
-personRepository.init();
