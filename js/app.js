@@ -125,6 +125,12 @@ angular
       $scope.newChild = new Child();
 
       $scope.wizardStep = 1;
+      $scope.wizardStepTitles = [
+          "Your Details",
+          "Your Address",
+          "Your Children",
+          "Summary"
+      ];
       $scope.showSummary = false;
       $scope.view = "landing";
 

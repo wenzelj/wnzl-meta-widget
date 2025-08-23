@@ -1,18 +1,153 @@
-.ng-hide {
-	display: none !important;
+/* General Styles */
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #1a1a1a;
+    color: #f0f0f0;
 }
 
-p {
-	text-align: center;
+a {
+    color: #00bcd4;
+    text-decoration: none;
+    transition: color 0.3s ease;
 }
 
+a:hover {
+    color: #0097a7;
+}
+
+/* Card Styles */
+.card {
+    background-color: #2c2c2c;
+    border: 1px solid #444;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transition: box-shadow 0.3s ease;
+}
+
+.card:hover {
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+}
+
+.card h2, .card h4 {
+    color: #f0f0f0;
+}
+
+/* Button Styles */
+.btn-primary {
+    background-color: #00bcd4;
+    border-color: #00bcd4;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.btn-primary:hover {
+    background-color: #0097a7;
+    border-color: #0097a7;
+}
+
+.btn-secondary {
+    background-color: #6c757d;
+    border-color: #6c757d;
+}
+
+.btn-success {
+    background-color: #28a745;
+    border-color: #28a745;
+}
+
+/* Progress Bar */
+.progress.custom-height {
+    height: 30px;
+    background-color: #444;
+}
+
+.progress-bar {
+    background-color: #00bcd4;
+}
+
+/* Form Elements */
+.form-control {
+    background-color: #333;
+    color: #f0f0f0;
+    border: 1px solid #555;
+}
+
+.form-control:focus {
+    background-color: #444;
+    color: #f0f0f0;
+    border-color: #00bcd4;
+    box-shadow: 0 0 0 0.2rem rgba(0, 188, 212, 0.25);
+}
+
+select {
+    width: 100%;
+    padding: .375rem .75rem;
+    background-color: #333;
+    color: #f0f0f0;
+    border: 1px solid #555;
+    border-radius: .25rem;
+}
+
+/* List Group */
+.list-group-item {
+    background-color: #2c2c2c;
+    border-color: #444;
+    color: #f0f0f0;
+}
+
+.list-group-item a {
+    color: #00bcd4;
+    display: block;
+    padding: 10px 15px;
+    transition: background-color 0.3s ease;
+}
+
+.list-group-item a:hover {
+    background-color: #333;
+    color: #0097a7;
+}
+
+/* Metawidget specific */
 #metawidget {
+	border: none;
+	padding: 0;
+	margin: 0;
+}
 
-	border: 1px solid #cccccc;
-	border-radius: 10px;
-	padding: 10px;
-	margin: 50px;
-	display: block;
+#metawidget .form-group {
+    margin-bottom: 1rem;
+}
+
+#metawidget label {
+    display: block;
+    margin-bottom: .5rem;
+    font-weight: 500;
+}
+
+#metawidget input[type="text"],
+#metawidget input[type="number"],
+#metawidget select {
+    display: block;
+    width: 100%;
+    padding: .375rem .75rem;
+    font-size: 1rem;
+    line-height: 1.5;
+    color: #f0f0f0;
+    background-color: #333;
+    background-clip: padding-box;
+    border: 1px solid #555;
+    border-radius: .25rem;
+    transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+}
+
+#metawidget input[type="text"]:focus,
+#metawidget input[type="number"]:focus,
+#metawidget select:focus {
+    color: #f0f0f0;
+    background-color: #444;
+    border-color: #00bcd4;
+    outline: 0;
+    box-shadow: 0 0 0 0.2rem rgba(0,188,212,.25);
 }
 
 #metawidget button {
@@ -20,20 +155,15 @@ p {
 	margin: 10px auto 0px;
 }
 
-
-.progress.custom-height {
-	height: 30px;
-	/* Set desired height */
-}
-
 tbody, td, tfoot, th, thead, tr {
 	padding:5px;
 }
-select {
-	width: 100%;
-	border-bottom: 1px solid black  ;
-	height: 100%;
+.ng-hide {
+	display: none !important;
 }
 
-.card{margin: auto;}
-
+.button-group {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
