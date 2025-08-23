@@ -1,6 +1,6 @@
 angular.module('myApp').component('schemaEditor', {
     templateUrl: 'js/components/schema-editor.html',
-    controller: ['personRepository', 'METAWIDGET_TYPES', '$scope', function(personRepository, METAWIDGET_TYPES, $scope) {
+    controller: ['personRepository', 'METAWIDGET_TYPES', function(personRepository, METAWIDGET_TYPES) {
         var $ctrl = this;
 
         $ctrl.schemas = {};

@@ -16,19 +16,43 @@ angular.module('myApp').factory('personRepository', ['$q', 'schemaService', func
                     db.createObjectStore('persons', { keyPath: 'id', autoIncrement: true });
                 }
                 if (!db.objectStoreNames.contains('schemas')) {
-                    var schemaStore = db.createObjectStore('schemas', { keyPath: 'id' });
-                    var defaultSchemas = schemaService.getDefaultSchemas();
-                    for (var key in defaultSchemas) {
-                        if (defaultSchemas.hasOwnProperty(key)) {
-                            schemaStore.add({ id: key, schema: defaultSchemas[key] });
-                        }
-                    }
+                    db.createObjectStore('schemas', { keyPath: 'id' });
                 }
             };
 
             request.onsuccess = function(event) {
                 db = event.target.result;
-                resolve(db);
+                var transaction = db.transaction(['schemas'], 'readwrite');
+                var store = transaction.objectStore('schemas');
+                var countRequest = store.count();
+
+                countRequest.onsuccess = function() {
+                    if (countRequest.result === 0) {
+                        var defaultSchemas = schemaService.getDefaultSchemas();
+                        var promises = [];
+                        for (var key in defaultSchemas) {
+                            if (defaultSchemas.hasOwnProperty(key)) {
+                                var deferred = $q.defer();
+                                var addRequest = store.add({ id: key, schema: defaultSchemas[key] });
+                                addRequest.onsuccess = function() {
+                                    deferred.resolve();
+                                };
+                                addRequest.onerror = function(event) {
+                                    deferred.reject(event.target.error);
+                                };
+                                promises.push(deferred.promise);
+                            }
+                        }
+                        $q.all(promises).then(function() {
+                            resolve(db);
+                        }, reject);
+                    } else {
+                        resolve(db);
+                    }
+                };
+                countRequest.onerror = function(event) {
+                    reject(event.target.error);
+                };
             };
 
             request.onerror = function(event) {
