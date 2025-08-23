@@ -5,13 +5,21 @@ angular.module('myApp').factory('personRepository', ['$q', function($q) {
     function getDb() {
         if (!dbPromise) {
             dbPromise = $q((resolve, reject) => {
-                const request = indexedDB.open('personsDB', 2);
+                const request = indexedDB.open('personsDB', 3);
 
                 request.onupgradeneeded = (event) => {
                     const db = event.target.result;
+                    let store;
                     if (!db.objectStoreNames.contains('persons')) {
-                        const store = db.createObjectStore('persons', { keyPath: 'id', autoIncrement: true });
+                        store = db.createObjectStore('persons', { keyPath: 'id', autoIncrement: true });
+                    } else {
+                        store = event.target.transaction.objectStore('persons');
+                    }
+
+                    if (!store.indexNames.contains('firstname')) {
                         store.createIndex('firstname', 'firstname', { unique: false });
+                    }
+                    if (!store.indexNames.contains('surname')) {
                         store.createIndex('surname', 'surname', { unique: false });
                     }
                 };
@@ -54,34 +62,15 @@ angular.module('myApp').factory('personRepository', ['$q', function($q) {
             return performDbOperation('persons', 'readonly', store => store.getAll());
         },
         search: function(term) {
-            if (!term) {
-                return this.getAll();
-            }
-            term = term.toLowerCase();
-
-            const searchFirstname = performDbOperation('persons', 'readonly', store => {
-                const index = store.index('firstname');
-                const range = IDBKeyRange.bound(term, term + '\uffff');
-                return index.getAll(range);
-            });
-
-            const searchSurname = performDbOperation('persons', 'readonly', store => {
-                const index = store.index('surname');
-                const range = IDBKeyRange.bound(term, term + '\uffff');
-                return index.getAll(range);
-            });
-
-            return $q.all([searchFirstname, searchSurname]).then(results => {
-                const [firstnameResults, surnameResults] = results;
-                const combinedResults = [...firstnameResults];
-
-                surnameResults.forEach(person => {
-                    if (!combinedResults.some(p => p.id === person.id)) {
-                        combinedResults.push(person);
-                    }
+            return this.getAll().then(persons => {
+                if (!term) {
+                    return persons;
+                }
+                term = term.toLowerCase();
+                return persons.filter(person => {
+                    return (person.firstname && person.firstname.toLowerCase().includes(term)) ||
+                           (person.surname && person.surname.toLowerCase().includes(term));
                 });
-
-                return combinedResults;
             });
         },
         clear: function() {
