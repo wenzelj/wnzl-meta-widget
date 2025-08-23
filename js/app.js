@@ -8,6 +8,9 @@ angular
 
       personRepository.getSchemas().then(function (result) {
         schemas = result;
+      }).catch(function(error) {
+        console.error("Error fetching schemas in app.js:", error);
+        schemas = {}; // Initialize to empty object on error
       });
 
       var restLookup = {
