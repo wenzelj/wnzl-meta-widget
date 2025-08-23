@@ -95,6 +95,10 @@ angular
         $scope.view = "wizard";
       };
 
+      $scope.showSchemaEditor = function () {
+        $scope.view = "schemaEditor";
+      };
+
       $scope.search = {
         term: ""
       };
@@ -135,6 +139,9 @@ angular
         $scope.newChild = new Child();
         $scope.wizardStep = 1;
         $scope.view = "landing";
+        personRepository.getSchemas().then(function (result) {
+          schemas = result;
+        });
       };
 
       $scope.addChild = function () {

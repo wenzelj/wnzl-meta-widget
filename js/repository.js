@@ -59,8 +59,35 @@ angular.module('myApp').factory('personRepository', ['$q', 'schemaService', func
         });
     }
 
+    function saveSchemas(schemas) {
+        return getDb().then(function(db) {
+            return $q(function(resolve, reject) {
+                var transaction = db.transaction(['schemas'], 'readwrite');
+                var store = transaction.objectStore('schemas');
+
+                var promises = [];
+                for (var key in schemas) {
+                    if (schemas.hasOwnProperty(key)) {
+                        var deferred = $q.defer();
+                        var request = store.put({ id: key, schema: schemas[key] });
+                        request.onsuccess = function() {
+                            deferred.resolve();
+                        };
+                        request.onerror = function(event) {
+                            deferred.reject(event.target.error);
+                        };
+                        promises.push(deferred.promise);
+                    }
+                }
+
+                $q.all(promises).then(resolve, reject);
+            });
+        });
+    }
+
     return {
         getSchemas: getSchemas,
+        saveSchemas: saveSchemas,
         save: function(person) {
             return getDb().then(function(db) {
                 return $q(function(resolve, reject) {
