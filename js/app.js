@@ -22,6 +22,7 @@ angular
             age: {
               type: "number",
               required: true,
+              minimum: 0,
             },
             occupation: {
               restLookup: "occupations",
@@ -47,7 +48,8 @@ angular
               type: "string"
             },
             age: {
-              type: "number"
+              type: "number",
+              minimum: 0
             },
           },
         },
