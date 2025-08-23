@@ -12,6 +12,7 @@
    <script src="js/models.js"></script>
    <script src="js/app.js"></script>
    <script src="js/repository.js"></script>
+   <script src="js/components/person-detail.component.js"></script>
    <link rel="stylesheet" type="text/css" href="css/app.css" />
 </head>
 
@@ -49,8 +50,7 @@
 
          <!-- Selected Person Details -->
          <div ng-if="selectedPerson" class="mt-4">
-             <h4>Person Details</h4>
-             <metawidget ng-model="selectedPerson" config="myConfig" read-only="true"></metawidget>
+             <person-detail person="selectedPerson"></person-detail>
          </div>
       </div>
    </div>
