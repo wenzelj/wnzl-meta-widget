@@ -16,7 +16,19 @@
 
 <body ng-controller="myController">
 
-   <div class="container mt-4">
+   <!-- Landing Page -->
+   <div class="container mt-4" ng-if="view === 'landing'">
+      <div class="card bg-light p-3 text-center">
+         <h2>Welcome</h2>
+         <p>Click the button below to add a new person.</p>
+         <div class="mt-3">
+            <button class="btn btn-primary btn-lg" ng-click="showWizard()">Add Person</button>
+         </div>
+      </div>
+   </div>
+
+   <!-- Wizard -->
+   <div class="container mt-4" ng-if="view === 'wizard'">
       <div class="progress mb-4 custom-height">
          <div class="progress-bar" role="progressbar" style="width: {{(wizardStep / 4) * 100}}%;">Step {{wizardStep}} of
             4</div>

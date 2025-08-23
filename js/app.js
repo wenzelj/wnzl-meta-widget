@@ -156,6 +156,11 @@ angular
     // Wizard
     $scope.wizardStep = 1;
     $scope.showSummary = false;
+    $scope.view = 'landing';
+
+    $scope.showWizard = function () {
+      $scope.view = 'wizard';
+    };
 
     $scope.nextStep = function () {
       $scope.wizardStep++;
@@ -173,6 +178,7 @@ angular
       $scope.newChild = {};
       $scope.wizardStep = 1;
       personRepository.clear();
+      $scope.view = 'landing';
     };
 
     $scope.addChild = function () {
