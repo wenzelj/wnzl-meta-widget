@@ -1,13 +1,19 @@
-const personRepository = {
-    dbPromise: null,
-    getDb: function() {
-        if (!this.dbPromise) {
-            this.dbPromise = new Promise((resolve, reject) => {
-                const request = indexedDB.open('personsDB', 1);
+angular.module('myApp').factory('personRepository', ['$q', function($q) {
+
+    let dbPromise = null;
+
+    function getDb() {
+        if (!dbPromise) {
+            dbPromise = $q((resolve, reject) => {
+                const request = indexedDB.open('personsDB', 2);
 
                 request.onupgradeneeded = (event) => {
-                    let db = event.target.result;
-                    db.createObjectStore('persons', { keyPath: 'id', autoIncrement: true });
+                    const db = event.target.result;
+                    if (!db.objectStoreNames.contains('persons')) {
+                        const store = db.createObjectStore('persons', { keyPath: 'id', autoIncrement: true });
+                        store.createIndex('firstname', 'firstname', { unique: false });
+                        store.createIndex('surname', 'surname', { unique: false });
+                    }
                 };
 
                 request.onsuccess = (event) => {
@@ -19,31 +25,15 @@ const personRepository = {
                 };
             });
         }
-        return this.dbPromise;
-    },
-    save: function(person) {
-        return this.getDb().then(db => {
-            return new Promise((resolve, reject) => {
-                const transaction = db.transaction(['persons'], 'readwrite');
-                const store = transaction.objectStore('persons');
-                const request = store.add(person);
+        return dbPromise;
+    }
 
-                request.onsuccess = () => {
-                    resolve();
-                };
-
-                request.onerror = (event) => {
-                    reject(event.target.error);
-                };
-            });
-        });
-    },
-    getAll: function() {
-        return this.getDb().then(db => {
-            return new Promise((resolve, reject) => {
-                const transaction = db.transaction(['persons'], 'readonly');
-                const store = transaction.objectStore('persons');
-                const request = store.getAll();
+    function performDbOperation(storeName, mode, operation) {
+        return getDb().then(db => {
+            return $q((resolve, reject) => {
+                const transaction = db.transaction([storeName], mode);
+                const store = transaction.objectStore(storeName);
+                const request = operation(store);
 
                 request.onsuccess = (event) => {
                     resolve(event.target.result);
@@ -54,34 +44,48 @@ const personRepository = {
                 };
             });
         });
-    },
-    search: function(term) {
-        return this.getAll().then(persons => {
+    }
+
+    return {
+        save: function(person) {
+            return performDbOperation('persons', 'readwrite', store => store.add(person));
+        },
+        getAll: function() {
+            return performDbOperation('persons', 'readonly', store => store.getAll());
+        },
+        search: function(term) {
             if (!term) {
-                return persons;
+                return this.getAll();
             }
             term = term.toLowerCase();
-            return persons.filter(person => {
-                return (person.firstname && person.firstname.toLowerCase().includes(term)) ||
-                       (person.surname && person.surname.toLowerCase().includes(term));
-            });
-        });
-    },
-    clear: function() {
-        return this.getDb().then(db => {
-            return new Promise((resolve, reject) => {
-                const transaction = db.transaction(['persons'], 'readwrite');
-                const store = transaction.objectStore('persons');
-                const request = store.clear();
 
-                request.onsuccess = () => {
-                    resolve();
-                };
-
-                request.onerror = (event) => {
-                    reject(event.target.error);
-                };
+            const searchFirstname = performDbOperation('persons', 'readonly', store => {
+                const index = store.index('firstname');
+                const range = IDBKeyRange.bound(term, term + '\uffff');
+                return index.getAll(range);
             });
-        });
-    }
-};
+
+            const searchSurname = performDbOperation('persons', 'readonly', store => {
+                const index = store.index('surname');
+                const range = IDBKeyRange.bound(term, term + '\uffff');
+                return index.getAll(range);
+            });
+
+            return $q.all([searchFirstname, searchSurname]).then(results => {
+                const [firstnameResults, surnameResults] = results;
+                const combinedResults = [...firstnameResults];
+
+                surnameResults.forEach(person => {
+                    if (!combinedResults.some(p => p.id === person.id)) {
+                        combinedResults.push(person);
+                    }
+                });
+
+                return combinedResults;
+            });
+        },
+        clear: function() {
+            return performDbOperation('persons', 'readwrite', store => store.clear());
+        }
+    };
+}]);
