@@ -172,7 +172,9 @@ angular
       };
 
       $scope.save = function () {
-        var personToSave = angular.copy($scope.person);
+        // Use JSON stringify and parse to create a plain JavaScript object
+        // that can be safely stored in IndexedDB. This removes the class prototype.
+        var personToSave = JSON.parse(JSON.stringify($scope.person));
         personRepository.save(personToSave).then(function () {
           $scope.wizardStep++;
         });
