@@ -25,7 +25,17 @@
 
 <body ng-controller="myController">
 
-   <div class="container mt-4" ng-if="view !== 'landing'">
+   <div class="container mt-4 text-center" ng-if="view === 'loading'">
+      <div class="card p-5">
+          <h1 class="display-4">Loading Schemas...</h1>
+          <p class="lead">Please wait while we prepare the application for you.</p>
+          <div class="spinner-border text-primary" role="status">
+              <span class="visually-hidden">Loading...</span>
+          </div>
+      </div>
+  </div>
+
+   <div class="container mt-4" ng-if="view !== 'landing' && view !== 'loading'">
       <button class="btn btn-secondary" ng-click="goHome()">
          <i class="fas fa-home"></i> Home
       </button>

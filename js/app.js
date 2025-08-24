@@ -6,12 +6,17 @@ angular
     function ($scope, personRepository) {
       var schemas;
 
-      personRepository.getSchemas().then(function (result) {
-        schemas = result;
-      }).catch(function(error) {
-        console.error("Error fetching schemas in app.js:", error);
-        schemas = {}; // Initialize to empty object on error
-      });
+      personRepository
+        .getSchemas()
+        .then(function (result) {
+          schemas = result;
+          $scope.view = "landing";
+        })
+        .catch(function (error) {
+          console.error("Error fetching schemas in app.js:", error);
+          schemas = {}; // Initialize to empty object on error
+          $scope.view = "landing";
+        });
 
       var restLookup = {
         occupations: [
@@ -92,7 +97,7 @@ angular
           "Summary"
       ];
       $scope.showSummary = false;
-      $scope.view = "landing";
+      $scope.view = "loading";
 
       $scope.showWizard = function () {
         $scope.view = "wizard";
