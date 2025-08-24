@@ -30,19 +30,18 @@ angular.module('myApp').factory('personRepository', ['$q', 'schemaService', func
                     if (countRequest.result === 0) {
                         var defaultSchemas = schemaService.getDefaultSchemas();
                         var promises = [];
-                        for (var key in defaultSchemas) {
-                            if (defaultSchemas.hasOwnProperty(key)) {
-                                var deferred = $q.defer();
+                        Object.keys(defaultSchemas).forEach(function(key) {
+                            var promise = $q(function(resolve, reject) {
                                 var addRequest = store.add({ id: key, schema: defaultSchemas[key] });
                                 addRequest.onsuccess = function() {
-                                    deferred.resolve();
+                                    resolve();
                                 };
                                 addRequest.onerror = function(event) {
-                                    deferred.reject(event.target.error);
+                                    reject(event.target.error);
                                 };
-                                promises.push(deferred.promise);
-                            }
-                        }
+                            });
+                            promises.push(promise);
+                        });
                         $q.all(promises).then(function() {
                             resolve(db);
                         }, reject);

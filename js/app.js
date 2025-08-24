@@ -160,9 +160,9 @@ angular
          var isConfirmed = window.confirm("Are you sure you want to reset all data? This action cannot be undone.");
 
          if (isConfirmed) {
-             personRepository.deleteDatabase().then(function() {
-                 $scope.startOver();
-             });
+            personRepository.deleteDatabase().then(function() {
+               window.location.reload();
+           });
          }
      };
 
