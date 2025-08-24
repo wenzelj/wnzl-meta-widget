@@ -123,14 +123,8 @@ angular
       };
 
       $scope.selectPerson = function (person) {
-        var personInstance = new Person(
-            person.firstname,
-            person.surname,
-            person.age,
-            person.occupation
-        );
-        personInstance.address = person.address;
-        personInstance.children = person.children;
+        // Create a new Person instance and copy all properties from the search result
+        var personInstance = Object.assign(new Person(), person);
         $scope.selectedPerson = personInstance;
       };
 

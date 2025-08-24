@@ -2,29 +2,90 @@ angular.module('myApp').component('personDetail', {
     bindings: {
         person: '<'
     },
+    controller: function() {
+        var $ctrl = this;
+
+        this.$onInit = function() {
+            $ctrl.details = [];
+            $ctrl.addressDetails = [];
+            $ctrl.childrenDetails = [];
+
+            if (!$ctrl.person) {
+                return;
+            }
+
+            var personKeys = Object.keys($ctrl.person);
+
+            personKeys.forEach(function(key) {
+                if (key.startsWith('$$')) {
+                    return;
+                }
+
+                if (key === 'address') {
+                    if (typeof $ctrl.person.address === 'object' && $ctrl.person.address !== null) {
+                        Object.keys($ctrl.person.address).forEach(function(addressKey) {
+                            $ctrl.addressDetails.push({ key: addressKey, value: $ctrl.person.address[addressKey] });
+                        });
+                    }
+                } else if (key === 'children') {
+                    if (Array.isArray($ctrl.person.children)) {
+                        $ctrl.childrenDetails = $ctrl.person.children;
+                    }
+                } else {
+                    $ctrl.details.push({ key: key, value: $ctrl.person[key] });
+                }
+            });
+        };
+
+        this.formatKey = function(key) {
+            return key.charAt(0).toUpperCase() + key.slice(1).replace(/([A-Z])/g, ' $1');
+        };
+    },
     template: `
-        <div class="card p-3">
-            <h4>Person Details</h4>
-            <div><strong>Firstname:</strong> {{$ctrl.person.firstname}}</div>
-            <div><strong>Surname:</strong> {{$ctrl.person.surname}}</div>
-            <div><strong>Age:</strong> {{$ctrl.person.age}}</div>
-            <div ng-if="$ctrl.person.occupation"><strong>Occupation:</strong> {{$ctrl.person.occupation}}</div>
-        </div>
+        <div class="card p-4">
+            <h3 class="card-title text-center mb-4">Selected Person Details</h3>
 
-        <div class="card p-3 mt-3" ng-if="$ctrl.person.address && ($ctrl.person.address.street || $ctrl.person.address.city || $ctrl.person.address.postcode)">
-            <h4>Address</h4>
-            <div><strong>Street:</strong> {{$ctrl.person.address.street}}</div>
-            <div><strong>City:</strong> {{$ctrl.person.address.city}}</div>
-            <div><strong>Postcode:</strong> {{$ctrl.person.address.postcode}}</div>
-        </div>
+            <!-- All Details -->
+            <div class="card mb-4" ng-if="$ctrl.details.length > 0">
+                <div class="card-header">
+                    <h4><i class="fas fa-user"></i> Details</h4>
+                </div>
+                <div class="card-body">
+                    <div ng-repeat="detail in $ctrl.details" class="row mt-2">
+                        <div class="col-md-6"><strong>{{$ctrl.formatKey(detail.key)}}:</strong></div>
+                        <div class="col-md-6">{{detail.value}}</div>
+                    </div>
+                </div>
+            </div>
 
-        <div class="card p-3 mt-3" ng-if="$ctrl.person.children && $ctrl.person.children.length > 0">
-            <h4>Children</h4>
-            <ul class="list-group">
-                <li ng-repeat="child in $ctrl.person.children" class="list-group-item">
-                    {{child.name}} ({{child.age}} years old)
-                </li>
-            </ul>
+            <!-- Address Details -->
+            <div class="card mb-4" ng-if="$ctrl.addressDetails.length > 0">
+                <div class="card-header">
+                    <h4><i class="fas fa-map-marker-alt"></i> Address</h4>
+                </div>
+                <div class="card-body">
+                    <div ng-repeat="detail in $ctrl.addressDetails" class="row mt-2">
+                        <div class="col-md-6"><strong>{{$ctrl.formatKey(detail.key)}}:</strong></div>
+                        <div class="col-md-6">{{detail.value}}</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Children Details -->
+            <div class="card" ng-if="$ctrl.childrenDetails.length > 0">
+                <div class="card-header">
+                    <h4><i class="fas fa-child"></i> Children</h4>
+                </div>
+                <div class="card-body">
+                    <ul class="list-group">
+                        <li ng-repeat="child in $ctrl.childrenDetails" class="list-group-item">
+                            <div ng-repeat="(key, value) in child">
+                                <strong>{{$ctrl.formatKey(key)}}:</strong> {{value}}
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
         </div>
     `
 });
