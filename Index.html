@@ -25,6 +25,12 @@
 
 <body ng-controller="myController">
 
+   <div class="container mt-4" ng-if="view !== 'landing'">
+      <button class="btn btn-secondary" ng-click="goHome()">
+         <i class="fas fa-home"></i> Home
+      </button>
+   </div>
+
    <!-- Landing Page -->
    <div class="container mt-4" ng-if="view === 'landing'">
       <div class="card p-5 text-center">
