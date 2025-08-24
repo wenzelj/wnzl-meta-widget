@@ -14,27 +14,26 @@ angular.module('myApp').component('personDetail', {
                 return;
             }
 
-            var personKeys = Object.keys($ctrl.person);
-
-            personKeys.forEach(function(key) {
-                if (key.startsWith('$$')) {
-                    return;
-                }
-
-                if (key === 'address') {
-                    if (typeof $ctrl.person.address === 'object' && $ctrl.person.address !== null) {
-                        Object.keys($ctrl.person.address).forEach(function(addressKey) {
-                            $ctrl.addressDetails.push({ key: addressKey, value: $ctrl.person.address[addressKey] });
-                        });
+            // Handle all properties except address and children
+            for (var key in $ctrl.person) {
+                if ($ctrl.person.hasOwnProperty(key) && !key.startsWith('$$')) {
+                    if (key !== 'address' && key !== 'children') {
+                        $ctrl.details.push({ key: key, value: $ctrl.person[key] });
                     }
-                } else if (key === 'children') {
-                    if (Array.isArray($ctrl.person.children)) {
-                        $ctrl.childrenDetails = $ctrl.person.children;
-                    }
-                } else {
-                    $ctrl.details.push({ key: key, value: $ctrl.person[key] });
                 }
-            });
+            }
+
+            // Handle address
+            if ($ctrl.person.address && typeof $ctrl.person.address === 'object') {
+                Object.keys($ctrl.person.address).forEach(function(addressKey) {
+                    $ctrl.addressDetails.push({ key: addressKey, value: $ctrl.person.address[addressKey] });
+                });
+            }
+
+            // Handle children
+            if ($ctrl.person.children && Array.isArray($ctrl.person.children)) {
+                $ctrl.childrenDetails = $ctrl.person.children;
+            }
         };
 
         this.formatKey = function(key) {
