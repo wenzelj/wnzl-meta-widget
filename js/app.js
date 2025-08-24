@@ -3,15 +3,34 @@ angular
   .controller("myController", [
     "$scope",
     "personRepository",
-    function ($scope, personRepository) {
+    "$timeout",
+    function ($scope, personRepository, $timeout) {
       var schemas;
+      var startTime = new Date().getTime();
 
-      personRepository.getSchemas().then(function (result) {
-        schemas = result;
-      }).catch(function(error) {
-        console.error("Error fetching schemas in app.js:", error);
-        schemas = {}; // Initialize to empty object on error
-      });
+      var endLoading = function() {
+        var endTime = new Date().getTime();
+        var timeElapsed = endTime - startTime;
+        var delay = 2000 - timeElapsed;
+        if (delay < 0) {
+            delay = 0;
+        }
+        $timeout(function() {
+            $scope.view = "landing";
+        }, delay);
+      }
+
+      personRepository
+        .getSchemas()
+        .then(function (result) {
+          schemas = result;
+          endLoading();
+        })
+        .catch(function (error) {
+          console.error("Error fetching schemas in app.js:", error);
+          schemas = {}; // Initialize to empty object on error
+          endLoading();
+        });
 
       var restLookup = {
         occupations: [
@@ -92,7 +111,7 @@ angular
           "Summary"
       ];
       $scope.showSummary = false;
-      $scope.view = "landing";
+      $scope.view = "loading";
 
       $scope.showWizard = function () {
         $scope.view = "wizard";
@@ -155,9 +174,9 @@ angular
          var isConfirmed = window.confirm("Are you sure you want to reset all data? This action cannot be undone.");
 
          if (isConfirmed) {
-             personRepository.deleteDatabase().then(function() {
-                 $scope.startOver();
-             });
+            personRepository.deleteDatabase().then(function() {
+               window.location.reload();
+           });
          }
      };
 
@@ -170,4 +189,12 @@ angular
         });
       };
     },
-  ]);
+  ])
+  .filter('keys', function() {
+    return function(input) {
+        if (!input) {
+            return [];
+        }
+        return Object.keys(input);
+    };
+});

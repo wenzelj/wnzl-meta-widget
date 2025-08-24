@@ -29,27 +29,20 @@ angular.module('myApp').factory('personRepository', ['$q', 'schemaService', func
                 countRequest.onsuccess = function() {
                     if (countRequest.result === 0) {
                         var defaultSchemas = schemaService.getDefaultSchemas();
-                        var promises = [];
-                        for (var key in defaultSchemas) {
-                            if (defaultSchemas.hasOwnProperty(key)) {
-                                var deferred = $q.defer();
-                                var addRequest = store.add({ id: key, schema: defaultSchemas[key] });
-                                addRequest.onsuccess = function() {
-                                    deferred.resolve();
-                                };
-                                addRequest.onerror = function(event) {
-                                    deferred.reject(event.target.error);
-                                };
-                                promises.push(deferred.promise);
-                            }
-                        }
-                        $q.all(promises).then(function() {
-                            resolve(db);
-                        }, reject);
-                    } else {
-                        resolve(db);
+                        Object.keys(defaultSchemas).forEach(function(key) {
+                            store.add({ id: key, schema: defaultSchemas[key] });
+                        });
                     }
                 };
+
+                transaction.oncomplete = function() {
+                    resolve(db);
+                };
+
+                transaction.onerror = function(event) {
+                    reject(event.target.error);
+                };
+
                 countRequest.onerror = function(event) {
                     reject(event.target.error);
                 };
@@ -89,22 +82,17 @@ angular.module('myApp').factory('personRepository', ['$q', 'schemaService', func
                 var transaction = db.transaction(['schemas'], 'readwrite');
                 var store = transaction.objectStore('schemas');
 
-                var promises = [];
-                for (var key in schemas) {
-                    if (schemas.hasOwnProperty(key)) {
-                        var deferred = $q.defer();
-                        var request = store.put({ id: key, schema: schemas[key] });
-                        request.onsuccess = function() {
-                            deferred.resolve();
-                        };
-                        request.onerror = function(event) {
-                            deferred.reject(event.target.error);
-                        };
-                        promises.push(deferred.promise);
-                    }
-                }
+                Object.keys(schemas).forEach(function(key) {
+                    store.put({ id: key, schema: schemas[key] });
+                });
 
-                $q.all(promises).then(resolve, reject);
+                transaction.oncomplete = function() {
+                    resolve();
+                };
+
+                transaction.onerror = function(event) {
+                    reject(event.target.error);
+                };
             });
         });
     }

@@ -1,43 +1,80 @@
 angular.module('myApp').component('schemaEditor', {
     template: `
-    <div class="card p-4">
-    <h2>Schema Editor</h2>
+<div class="container mt-4">
+    <div class="card shadow-sm mb-4">
+        <div class="card-body">
+            <h2 class="card-title">Schema Editor</h2>
+            <p class="card-text text-muted">Select a schema to view and add new properties.</p>
+            <div class="form-group mb-3">
+                <label for="schemaSelect" class="form-label"><strong>Select Schema to Edit:</strong></label>
+                <select id="schemaSelect" class="form-select" ng-model="$ctrl.selectedSchemaKey">
+                    <option ng-repeat="(key, schema) in $ctrl.schemas" value="{{key}}">{{key}}</option>
+                </select>
+            </div>
+        </div>
+    </div>
 
-    <div class="form-group">
-        <label for="schemaSelect">Select Schema to Edit:</label>
-        <select id="schemaSelect" class="form-control" ng-model="$ctrl.selectedSchemaKey">
-            <option ng-repeat="(key, schema) in $ctrl.schemas" value="{{key}}">{{key}}</option>
-        </select>
+    <div ng-if="!$ctrl.selectedSchemaKey" class="alert alert-info">
+        Please select a schema to begin editing.
     </div>
 
     <div ng-if="$ctrl.selectedSchemaKey">
-        <hr>
-        <h4>Add New Property to {{$ctrl.selectedSchemaKey}}</h4>
-        <div class="form-row">
-            <div class="col">
-                <input type="text" class="form-control" placeholder="Property Name" ng-model="$ctrl.newProperty.name">
-            </div>
-            <div class="col">
-                <select class="form-control" ng-model="$ctrl.newProperty.type" ng-options="type for type in $ctrl.types"></select>
-            </div>
-            <div class="col">
-                <button class="btn btn-success" ng-click="$ctrl.addProperty()">Add Property</button>
+        <!-- Add New Property Card -->
+        <div class="card shadow-sm mb-4">
+            <div class="card-body">
+                <h4 class="card-title">Add New Property to <strong>{{$ctrl.selectedSchemaKey}}</strong></h4>
+                <div class="row g-3 align-items-end">
+                    <div class="col-md-5">
+                        <label class="form-label">Property Name</label>
+                        <input type="text" class="form-control" placeholder="e.g., 'email'" ng-model="$ctrl.newProperty.name">
+                    </div>
+                    <div class="col-md-5">
+                        <label class="form-label">Property Type</label>
+                        <select class="form-select" ng-model="$ctrl.newProperty.type" ng-options="type for type in $ctrl.types"></select>
+                    </div>
+                    <div class="col-md-2">
+                        <button class="btn btn-success w-100" ng-click="$ctrl.addProperty()">
+                            <i class="fas fa-plus-circle"></i> Add
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <hr>
-        <h4>Properties for {{$ctrl.selectedSchemaKey}}</h4>
-        <ul class="list-group">
-            <li class="list-group-item" ng-repeat="(propName, propDetails) in $ctrl.schemas[$ctrl.selectedSchemaKey].properties">
-                <strong>{{propName}}</strong>: {{propDetails.type}}
-            </li>
-        </ul>
+        <!-- Properties List Card -->
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h4 class="card-title">Properties for <strong>{{$ctrl.selectedSchemaKey}}</strong></h4>
+                <ul class="list-group list-group-flush" ng-if="($ctrl.schemas[$ctrl.selectedSchemaKey].properties | keys).length > 0">
+                    <li class="list-group-item" ng-repeat="(propName, propDetails) in $ctrl.schemas[$ctrl.selectedSchemaKey].properties">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span>
+                                <i class="fas fa-cog text-secondary me-2"></i>
+                                <strong>{{propName}}</strong>
+                            </span>
+                            <div>
+                                <span class="badge bg-primary rounded-pill me-2">{{propDetails.type}}</span>
+                                <button class="btn btn-danger btn-sm" ng-click="$ctrl.deleteProperty(propName)">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+                <div ng-if="!($ctrl.schemas[$ctrl.selectedSchemaKey].properties | keys).length" class="alert alert-light mt-3">
+                    This schema has no properties yet. Add one above!
+                </div>
+            </div>
+        </div>
 
-        <hr>
-        <button class="btn btn-primary" ng-click="$ctrl.saveSchemas()">Save All Changes</button>
+        <div class="mt-4 text-end">
+            <button class="btn btn-primary btn-lg" ng-click="$ctrl.saveSchemas()">
+                <i class="fas fa-save"></i> Save All Changes
+            </button>
+        </div>
     </div>
 </div>
-    `,
+`,
     controller: ['personRepository', 'METAWIDGET_TYPES', function(personRepository, METAWIDGET_TYPES) {
         var $ctrl = this;
 
@@ -74,7 +111,17 @@ angular.module('myApp').component('schemaEditor', {
         };
 
         $ctrl.saveSchemas = function() {
-            personRepository.saveSchemas($ctrl.schemas);
+            if (window.confirm("Are you sure you want to save all changes?")) {
+                personRepository.saveSchemas($ctrl.schemas);
+            }
+        };
+
+        $ctrl.deleteProperty = function(propertyName) {
+            if (window.confirm("Are you sure you want to delete the property '" + propertyName + "'? This action cannot be undone.")) {
+                if ($ctrl.selectedSchemaKey && $ctrl.schemas[$ctrl.selectedSchemaKey].properties) {
+                    delete $ctrl.schemas[$ctrl.selectedSchemaKey].properties[propertyName];
+                }
+            }
         };
     }]
 });
