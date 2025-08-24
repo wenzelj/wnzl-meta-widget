@@ -55,6 +55,16 @@ a:hover {
     border-color: #28a745;
 }
 
+.btn-danger {
+    background-color: #d9534f;
+    border-color: #d9534f;
+}
+
+.btn-danger:hover {
+    background-color: #c9302c;
+    border-color: #ac2925;
+}
+
 /* Progress Bar */
 .progress.custom-height {
     height: 30px;

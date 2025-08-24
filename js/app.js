@@ -151,6 +151,16 @@ angular
         $scope.newChild = new Child();
       };
 
+      $scope.confirmAndResetData = function() {
+         var isConfirmed = window.confirm("Are you sure you want to reset all data? This action cannot be undone.");
+
+         if (isConfirmed) {
+             personRepository.deleteDatabase().then(function() {
+                 $scope.startOver();
+             });
+         }
+     };
+
       $scope.save = function () {
         // Use JSON stringify and parse to create a plain JavaScript object
         // that can be safely stored in IndexedDB. This removes the class prototype.
