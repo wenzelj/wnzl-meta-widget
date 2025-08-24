@@ -3,19 +3,33 @@ angular
   .controller("myController", [
     "$scope",
     "personRepository",
-    function ($scope, personRepository) {
+    "$timeout",
+    function ($scope, personRepository, $timeout) {
       var schemas;
+      var startTime = new Date().getTime();
+
+      var endLoading = function() {
+        var endTime = new Date().getTime();
+        var timeElapsed = endTime - startTime;
+        var delay = 2000 - timeElapsed;
+        if (delay < 0) {
+            delay = 0;
+        }
+        $timeout(function() {
+            $scope.view = "landing";
+        }, delay);
+      }
 
       personRepository
         .getSchemas()
         .then(function (result) {
           schemas = result;
-          $scope.view = "landing";
+          endLoading();
         })
         .catch(function (error) {
           console.error("Error fetching schemas in app.js:", error);
           schemas = {}; // Initialize to empty object on error
-          $scope.view = "landing";
+          endLoading();
         });
 
       var restLookup = {
