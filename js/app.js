@@ -151,6 +151,23 @@ angular
         $scope.newChild = new Child();
       };
 
+      var resetModal;
+      setTimeout(function() {
+         resetModal = new bootstrap.Modal(document.getElementById('resetDataModal'));
+      }, 0);
+
+
+      $scope.showResetModal = function() {
+         resetModal.show();
+      };
+
+      $scope.resetData = function() {
+         personRepository.deleteDatabase().then(function() {
+            resetModal.hide();
+            location.reload();
+         });
+      };
+
       $scope.save = function () {
         // Use JSON stringify and parse to create a plain JavaScript object
         // that can be safely stored in IndexedDB. This removes the class prototype.

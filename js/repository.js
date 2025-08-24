@@ -174,6 +174,28 @@ angular.module('myApp').factory('personRepository', ['$q', 'schemaService', func
                     };
                 });
             });
+        },
+        deleteDatabase: function() {
+            return $q(function(resolve, reject) {
+                if (db) {
+                    db.close();
+                    db = null;
+                }
+                var request = indexedDB.deleteDatabase('myApp');
+
+                request.onsuccess = function() {
+                    resolve();
+                };
+
+                request.onerror = function(event) {
+                    reject(event.target.error);
+                };
+
+                request.onblocked = function(event) {
+                    console.warn("Delete database request is blocked", event);
+                    reject("Database deletion blocked");
+                };
+            });
         }
     };
 }]);
