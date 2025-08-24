@@ -52,7 +52,12 @@ angular.module('myApp').component('schemaEditor', {
                                 <i class="fas fa-cog text-secondary me-2"></i>
                                 <strong>{{propName}}</strong>
                             </span>
-                            <span class="badge bg-primary rounded-pill">{{propDetails.type}}</span>
+                            <div>
+                                <span class="badge bg-primary rounded-pill me-2">{{propDetails.type}}</span>
+                                <button class="btn btn-danger btn-sm" ng-click="$ctrl.deleteProperty(propName)">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
                         </div>
                     </li>
                 </ul>
@@ -108,6 +113,14 @@ angular.module('myApp').component('schemaEditor', {
         $ctrl.saveSchemas = function() {
             if (window.confirm("Are you sure you want to save all changes?")) {
                 personRepository.saveSchemas($ctrl.schemas);
+            }
+        };
+
+        $ctrl.deleteProperty = function(propertyName) {
+            if (window.confirm("Are you sure you want to delete the property '" + propertyName + "'? This action cannot be undone.")) {
+                if ($ctrl.selectedSchemaKey && $ctrl.schemas[$ctrl.selectedSchemaKey].properties) {
+                    delete $ctrl.schemas[$ctrl.selectedSchemaKey].properties[propertyName];
+                }
             }
         };
     }]
