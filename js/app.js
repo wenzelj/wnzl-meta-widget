@@ -151,26 +151,15 @@ angular
         $scope.newChild = new Child();
       };
 
-      var resetModal;
-      $scope.showResetModal = function() {
-         if (!resetModal) {
-            resetModal = new bootstrap.Modal(document.getElementById('resetDataModal'));
+      $scope.confirmAndResetData = function() {
+         var isConfirmed = window.confirm("Are you sure you want to reset all data? This action cannot be undone.");
+
+         if (isConfirmed) {
+             personRepository.deleteDatabase().then(function() {
+                 $scope.startOver();
+             });
          }
-         resetModal.show();
-      };
-
-      $scope.resetData = function() {
-         personRepository.deleteDatabase().then(function() {
-            var modalElement = document.getElementById('resetDataModal');
-            modalElement.addEventListener('hidden.bs.modal', function () {
-               $scope.$apply(function() {
-                  $scope.startOver();
-               });
-            }, { once: true });
-
-            resetModal.hide();
-         });
-      };
+     };
 
       $scope.save = function () {
         // Use JSON stringify and parse to create a plain JavaScript object
