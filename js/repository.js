@@ -117,6 +117,9 @@ angular.module('myApp').factory('personRepository', ['$q', 'schemaService', func
                 });
             });
         },
+        update: function(person) {
+            return this.save(person);
+        },
         getAll: function() {
             return getDb().then(function(db) {
                 return $q(function(resolve, reject) {

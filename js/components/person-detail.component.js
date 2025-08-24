@@ -2,10 +2,15 @@ angular.module('myApp').component('personDetail', {
     bindings: {
         person: '<'
     },
-    controller: function() {
+    controller: ['personRepository', function(personRepository) {
         var $ctrl = this;
+        $ctrl.isEditing = false;
 
         this.$onInit = function() {
+            $ctrl.populateDetails();
+        };
+
+        $ctrl.populateDetails = function() {
             $ctrl.details = [];
             $ctrl.addressDetails = [];
             $ctrl.childrenDetails = [];
@@ -36,13 +41,43 @@ angular.module('myApp').component('personDetail', {
             }
         };
 
+        $ctrl.toggleEdit = function() {
+            $ctrl.isEditing = !$ctrl.isEditing;
+            if ($ctrl.isEditing) {
+                // Create a copy of the person object for editing
+                $ctrl.editablePerson = angular.copy($ctrl.person);
+            }
+        };
+
+        $ctrl.saveChanges = function() {
+            if (window.confirm('Are you sure you want to save the changes?')) {
+                personRepository.update($ctrl.editablePerson).then(function() {
+                    $ctrl.person = $ctrl.editablePerson;
+                    $ctrl.populateDetails();
+                    $ctrl.isEditing = false;
+                });
+            }
+        };
+
         this.formatKey = function(key) {
             return key.charAt(0).toUpperCase() + key.slice(1).replace(/([A-Z])/g, ' $1');
         };
-    },
+    }],
     template: `
         <div class="card p-4">
             <h3 class="card-title text-center mb-4">Selected Person Details</h3>
+
+            <div class="d-flex justify-content-end mb-3">
+                <button class="btn btn-secondary me-2" ng-if="$ctrl.isEditing" ng-click="$ctrl.toggleEdit()">
+                    <i class="fas fa-times"></i> Cancel
+                </button>
+                <button class="btn btn-success me-2" ng-if="$ctrl.isEditing" ng-click="$ctrl.saveChanges()">
+                    <i class="fas fa-save"></i> Save
+                </button>
+                <button class="btn btn-primary" ng-if="!$ctrl.isEditing" ng-click="$ctrl.toggleEdit()">
+                    <i class="fas fa-edit"></i> Edit
+                </button>
+            </div>
 
             <!-- All Details -->
             <div class="card mb-4" ng-if="$ctrl.details.length > 0">
@@ -52,7 +87,10 @@ angular.module('myApp').component('personDetail', {
                 <div class="card-body">
                     <div ng-repeat="detail in $ctrl.details" class="row mt-2">
                         <div class="col-md-6"><strong>{{$ctrl.formatKey(detail.key)}}:</strong></div>
-                        <div class="col-md-6">{{detail.value}}</div>
+                        <div class="col-md-6">
+                            <span ng-if="!$ctrl.isEditing">{{detail.value}}</span>
+                            <input ng-if="$ctrl.isEditing" type="text" class="form-control" ng-model="$ctrl.editablePerson[detail.key]" />
+                        </div>
                     </div>
                 </div>
             </div>
@@ -65,7 +103,10 @@ angular.module('myApp').component('personDetail', {
                 <div class="card-body">
                     <div ng-repeat="detail in $ctrl.addressDetails" class="row mt-2">
                         <div class="col-md-6"><strong>{{$ctrl.formatKey(detail.key)}}:</strong></div>
-                        <div class="col-md-6">{{detail.value}}</div>
+                        <div class="col-md-6">
+                            <span ng-if="!$ctrl.isEditing">{{detail.value}}</span>
+                            <input ng-if="$ctrl.isEditing" type="text" class="form-control" ng-model="$ctrl.editablePerson.address[detail.key]" />
+                        </div>
                     </div>
                 </div>
             </div>
