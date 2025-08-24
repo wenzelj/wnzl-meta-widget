@@ -102,6 +102,11 @@ angular
         $scope.view = "schemaEditor";
       };
 
+      $scope.goHome = function () {
+        $scope.view = "landing";
+        $scope.startOver();
+      };
+
       $scope.search = {
         term: ""
       };
