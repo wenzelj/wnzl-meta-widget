@@ -152,12 +152,10 @@ angular
       };
 
       var resetModal;
-      setTimeout(function() {
-         resetModal = new bootstrap.Modal(document.getElementById('resetDataModal'));
-      }, 0);
-
-
       $scope.showResetModal = function() {
+         if (!resetModal) {
+            resetModal = new bootstrap.Modal(document.getElementById('resetDataModal'));
+         }
          resetModal.show();
       };
 
