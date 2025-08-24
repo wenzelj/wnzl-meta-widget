@@ -161,8 +161,14 @@ angular
 
       $scope.resetData = function() {
          personRepository.deleteDatabase().then(function() {
+            var modalElement = document.getElementById('resetDataModal');
+            modalElement.addEventListener('hidden.bs.modal', function () {
+               $scope.$apply(function() {
+                  $scope.startOver();
+               });
+            }, { once: true });
+
             resetModal.hide();
-            $scope.startOver();
          });
       };
 
